@@ -1,0 +1,39 @@
+name: License Scanning for Python
+
+on:
+  schedule:
+    - cron: '0 8,18 * * 1-5'
+  push:
+    paths:
+      - 'pyproject.toml'
+      - 'constraints.txt'
+      - '.github/workflows/license-scanning-python.yml'
+
+env:
+  ALLOW_LICENSES: "MIT License;Apache Software License;BSD License"
+  # IGNORE_PACKAGES: ""
+
+jobs:
+  scan:
+    name: Scan for licenses
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install uv
+          uv venv
+          uv pip install -r constraints.txt
+      - name: Install pip-licenses
+        run: |
+          source .venv/bin/activate
+          pip install pip-licenses
+      - name: Scan for licenses
+        run: |
+          source .venv/bin/activate
+          pip-licenses --allow-only="${{ env.ALLOW_LICENSES }}" # --ignore-packages="${{ env.IGNORE_PACKAGES }}"
+
