@@ -10,7 +10,7 @@ on:
       - '.github/workflows/license-scanning-python.yml'
 
 env:
-  ALLOW_LICENSES: "MIT License;Apache Software License;BSD License"
+  ALLOW_LICENSES: "MIT License;Apache Software License;BSD License;BSD-3-Clause"
   # IGNORE_PACKAGES: ""
 
 jobs:
