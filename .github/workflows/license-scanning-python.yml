@@ -10,7 +10,7 @@ on:
       - '.github/workflows/license-scanning-python.yml'
 
 env:
-  ALLOW_LICENSES: "MIT License;Apache Software License;BSD License;BSD-3-Clause"
+  ALLOW_LICENSES: "MIT License;Apache Software License;BSD License;BSD-3-Clause;Python Software Foundation License"
   # IGNORE_PACKAGES: ""
 
 jobs:
@@ -37,5 +37,50 @@ jobs:
       - name: Scan for licenses
         run: |
           source .venv/bin/activate
-          pip-licenses --allow-only="${{ env.ALLOW_LICENSES }}" # --ignore-packages="${{ env.IGNORE_PACKAGES }}"
+          # Get all licenses first to see everything
+          echo "=== All package licenses ==="
+          pip-licenses
+          echo ""
+          echo "=== Validating against allowed licenses ==="
+          # Use Python to check all licenses and report all violations at once
+          python << 'EOF'
+          import subprocess
+          import sys
+          import os
+          
+          allowed_licenses = "${{ env.ALLOW_LICENSES }}".split(";")
+          allowed_licenses = [l.strip() for l in allowed_licenses]
+          
+          # Get all licenses using pip-licenses from venv
+          venv_bin = os.path.join(os.getcwd(), ".venv", "bin")
+          pip_licenses_cmd = os.path.join(venv_bin, "pip-licenses")
+          
+          result = subprocess.run(
+              [pip_licenses_cmd, "--format", "json"],
+              capture_output=True,
+              text=True
+          )
+          
+          if result.returncode != 0:
+              print("Error getting license information")
+              sys.exit(1)
+          
+          import json
+          packages = json.loads(result.stdout)
+          
+          violations = []
+          for pkg in packages:
+              license_name = pkg.get("License", "").strip()
+              if license_name and license_name not in allowed_licenses:
+                  violations.append(f"license {license_name} not in allow-only licenses was found for package {pkg['Name']}:{pkg['Version']}")
+          
+          if violations:
+              print("\n=== License violations detected ===")
+              for v in violations:
+                  print(v)
+              sys.exit(1)
+          else:
+              print("All licenses are compliant!")
+              sys.exit(0)
+          EOF
 
