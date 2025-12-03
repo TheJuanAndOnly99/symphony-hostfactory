@@ -25,9 +25,11 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install uv
-          uv venv
-          uv pip install -r constraints.txt
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install -r constraints.txt
+          # Install the project itself to ensure all dependencies are tracked
+          pip install -e .
       - name: Install pip-licenses
         run: |
           source .venv/bin/activate
