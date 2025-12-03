@@ -10,8 +10,8 @@ on:
       - '.github/workflows/license-scanning-python.yml'
 
 env:
-  ALLOW_LICENSES: "MIT License;Apache Software License;BSD License;BSD-3-Clause;Python Software Foundation License"
-  # IGNORE_PACKAGES: ""
+  ALLOW_LICENSES: "MIT License;MIT;Apache Software License;Apache-2.0;BSD License;BSD-2-Clause;BSD-3-Clause;Python Software Foundation License;Python-2.0;Mozilla Public License 2.0 (MPL 2.0)"
+  IGNORE_PACKAGES: "hostfactory"
 
 jobs:
   scan:
@@ -22,28 +22,26 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: 'pip'
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           python -m venv .venv
-          source .venv/bin/activate
-          pip install -r constraints.txt
+          .venv/bin/python -m pip install --upgrade pip
+          .venv/bin/pip install -r constraints.txt
           # Install the project itself to ensure all dependencies are tracked
-          pip install -e .
-      - name: Install pip-licenses
-        run: |
-          source .venv/bin/activate
-          pip install pip-licenses
+          .venv/bin/pip install -e .
+          .venv/bin/pip install pip-licenses
       - name: Scan for licenses
         run: |
-          source .venv/bin/activate
           # Get all licenses first to see everything
           echo "=== All package licenses ==="
-          pip-licenses
+          .venv/bin/pip-licenses
           echo ""
           echo "=== Validating against allowed licenses ==="
           # Use Python to check all licenses and report all violations at once
-          python << 'EOF'
+          .venv/bin/python << 'EOF'
+          import json
           import subprocess
           import sys
           import os
@@ -62,17 +60,78 @@ jobs:
           )
           
           if result.returncode != 0:
-              print("Error getting license information")
+              print(f"Error getting license information: {result.stderr}", file=sys.stderr)
               sys.exit(1)
           
-          import json
-          packages = json.loads(result.stdout)
+          if not result.stdout.strip():
+              print("Error: pip-licenses returned empty output", file=sys.stderr)
+              sys.exit(1)
+          
+          try:
+              packages = json.loads(result.stdout)
+          except json.JSONDecodeError as e:
+              print(f"Error parsing JSON output: {e}", file=sys.stderr)
+              print(f"Output was: {result.stdout[:500]}", file=sys.stderr)
+              sys.exit(1)
+          
+          if not isinstance(packages, list):
+              print(f"Error: Expected list of packages, got {type(packages)}", file=sys.stderr)
+              sys.exit(1)
+          
+          ignore_packages = "${{ env.IGNORE_PACKAGES }}".split(";")
+          ignore_packages_lower = {p.strip().lower() for p in ignore_packages if p.strip()}
           
           violations = []
+          checked_count = 0
+          ignored_count = 0
+          unknown_count = 0
+          
           for pkg in packages:
+              pkg_name = pkg.get("Name", "")
+              # Skip ignored packages (e.g., the project itself)
+              if pkg_name.lower() in ignore_packages_lower:
+                  ignored_count += 1
+                  continue
+              
               license_name = pkg.get("License", "").strip()
-              if license_name and license_name not in allowed_licenses:
-                  violations.append(f"license {license_name} not in allow-only licenses was found for package {pkg['Name']}:{pkg['Version']}")
+              if not license_name or license_name.upper() == "UNKNOWN":
+                  unknown_count += 1
+                  continue
+              
+              checked_count += 1
+              
+              # Check if license is allowed (handle combinations with AND, semicolons)
+              is_allowed = False
+              
+              # First check if the full license string matches exactly
+              if license_name in allowed_licenses:
+                  is_allowed = True
+              else:
+                  # Handle combinations: "MIT AND Python-2.0" means both must be allowed
+                  # "Apache Software License; BSD License" means either is acceptable
+                  license_upper = license_name.upper()
+                  if " AND " in license_upper:
+                      # AND combination: all parts must be in allowed list
+                      parts = [p.strip() for p in license_name.replace(" AND ", ";").replace(" and ", ";").split(";")]
+                      is_allowed = all(part in allowed_licenses for part in parts)
+                  elif ";" in license_name:
+                      # Semicolon-separated: at least one must be in allowed list
+                      parts = [p.strip() for p in license_name.split(";")]
+                      is_allowed = any(part in allowed_licenses for part in parts)
+                  else:
+                      # Single license: check if it's in allowed list
+                      is_allowed = license_name in allowed_licenses
+              
+              if not is_allowed:
+                  violations.append(f"license {license_name} not in allow-only licenses was found for package {pkg_name}:{pkg.get('Version', 'unknown')}")
+          
+          # Print summary
+          print(f"\n=== Summary ===")
+          print(f"Total packages: {len(packages)}")
+          print(f"Checked: {checked_count}")
+          print(f"Ignored: {ignored_count}")
+          print(f"Unknown licenses: {unknown_count}")
+          print(f"Violations: {len(violations)}")
           
           if violations:
               print("\n=== License violations detected ===")
@@ -80,7 +139,7 @@ jobs:
                   print(v)
               sys.exit(1)
           else:
-              print("All licenses are compliant!")
+              print("\nAll licenses are compliant!")
               sys.exit(0)
           EOF
 
