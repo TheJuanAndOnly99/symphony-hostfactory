@@ -267,11 +267,13 @@ def test_request_return_machines(
     return_value=pathlib.Path("/path/to/workdir"),
 )
 @mock.patch(
-    "open_resource_broker.api._resolve_machine_status", return_value=("running", "succeed")
+    "open_resource_broker.api._resolve_machine_status",
+    return_value=("running", "succeed"),
 )
 @mock.patch("open_resource_broker.api._load_pod_file", return_value=mock_pod)
 @mock.patch(
-    "open_resource_broker.fsutils.iterate_directory", return_value=[pathlib.Path("pod1")]
+    "open_resource_broker.fsutils.iterate_directory",
+    return_value=[pathlib.Path("pod1")],
 )
 @mock.patch("open_resource_broker.api._is_return_request", return_value=False)
 def test_get_request_status(
