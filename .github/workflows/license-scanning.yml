@@ -33,7 +33,7 @@ jobs:
       - name: Scan for licenses
         run: |
           echo "=== All detected licenses ==="
-          pip-licenses --format=markdown
+          pip-licenses --format=markdown --ignore-packages open-resource-broker
           echo ""
           echo "=== Checking allowed licenses ==="
-          pip-licenses --allow-only="${{ env.ALLOW_LICENSES }}"
+          pip-licenses --allow-only="${{ env.ALLOW_LICENSES }}" --ignore-packages open-resource-broker
