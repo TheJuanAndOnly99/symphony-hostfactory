@@ -70,13 +70,13 @@ let
 
     installCheckPhase = ''
       echo Running pytest
-      ${py.interpreter} -m pytest
+      ${py.interpreter} -m pytest src/open_resource_broker/tests/unit
       echo Running ruff check
-      ruff check
+      ruff check src/open_resource_broker
       echo Running ruff format --check
-      ruff format --check
-      echo $unning mypy
-      mypy $src/src
+      ruff format --check src/open_resource_broker
+      echo Running mypy
+      mypy src/open_resource_broker
       echo Done
     '';
   };
