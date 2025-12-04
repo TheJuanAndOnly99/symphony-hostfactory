@@ -21,12 +21,6 @@ import sys
 import click
 import kubernetes
 import urllib3
-
-import hostfactory
-from hostfactory import api as hfapi
-from hostfactory import cli
-from hostfactory import hfcron
-from hostfactory import k8sutils
 from hostfactory.cli import context
 from hostfactory.cli import log_handler
 from hostfactory.impl.watchers import events as event_watcher
@@ -35,6 +29,12 @@ from hostfactory.impl.watchers import kube_watcher
 from hostfactory.impl.watchers import node_watcher
 from hostfactory.impl.watchers import pod_watcher
 from hostfactory.impl.watchers import request
+
+import hostfactory
+from hostfactory import api as hfapi
+from hostfactory import cli
+from hostfactory import hfcron
+from hostfactory import k8sutils
 
 ON_EXCEPTIONS = hostfactory.handle_exceptions(
     [
@@ -223,7 +223,7 @@ def request_machines(json_file) -> None:
 )
 @ON_EXCEPTIONS
 def request_return_machines(json_file) -> None:
-    """Request to return machines based on the provided open-resource-broker input JSON."""
+    """Request to return machines based on the provided input JSON."""
     request = json.load(json_file)
     logger.info("request_return_machines: %s", request)
     machines = request["machines"]

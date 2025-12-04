@@ -17,10 +17,11 @@ import json
 import logging
 import pathlib
 
+from hostfactory.impl.watchers import cluster
+
 from hostfactory import events as hfevents
 from hostfactory import fsutils
 from hostfactory import k8sutils
-from hostfactory.impl.watchers import cluster
 
 _HF_K8S_LABEL_KEY = "symphony/open-resource-broker-reqid"
 

@@ -19,12 +19,12 @@ import time
 from contextlib import closing
 
 import pytest
-
-from hostfactory import events
-from hostfactory import fsutils
 from hostfactory.cli import context
 from hostfactory.impl.watchers.events import PrometheusEventBackend
 from hostfactory.impl.watchers.events import SqliteEventBackend
+
+from hostfactory import events
+from hostfactory import fsutils
 
 
 def test_post_events() -> None:

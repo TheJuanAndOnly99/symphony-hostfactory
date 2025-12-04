@@ -27,7 +27,6 @@ from time import sleep
 import click.testing
 import pytest
 import yaml
-
 from hostfactory.cli.hf import run as hf
 from hostfactory.cli.hfadmin import run as hfadmin
 from hostfactory.impl.hfadmin import delete_pods_in_namespace
@@ -174,7 +173,8 @@ def run_custom_hostfactory_test(  # noqa: C901, PLR0912
             if "return_count" in test_spec:
                 machines = random.sample(machines, test_spec["return_count"])
             args = " " + " ".join(machines)
-        result = run_hostfactory_admin_command(test_spec["open-resource-broker-admin"] + args)
+        cmd = test_spec["open-resource-broker-admin"] + args
+        result = run_hostfactory_admin_command(cmd)
         json_in = result.output
         assert json_in is not None, result
 

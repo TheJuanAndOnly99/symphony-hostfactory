@@ -16,9 +16,10 @@ Watches nodes events are writes them to the database
 import logging
 import pathlib
 
+from hostfactory.impl.watchers import cluster
+
 from hostfactory import events as hfevents
 from hostfactory import k8sutils
-from hostfactory.impl.watchers import cluster
 
 logger = logging.getLogger(__name__)
 

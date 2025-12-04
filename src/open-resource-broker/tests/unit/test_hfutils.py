@@ -20,7 +20,6 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
-
 from hostfactory.app.hfutilsapp import Settings
 from hostfactory.app.hfutilsapp import create_app
 

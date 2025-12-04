@@ -19,14 +19,13 @@ from datetime import datetime
 from importlib.resources import files
 
 import click
+import hostfactory.events_schema as schema
 import sqlalchemy
 from alembic import command
 from alembic.config import Config
+from hostfactory.cli import log_handler
 from sqlalchemy import func
 from sqlalchemy.orm import sessionmaker
-
-import hostfactory.events_schema as schema
-from hostfactory.cli import log_handler
 
 _skip = {
     "pod:disrupted_message",
@@ -232,7 +231,8 @@ def _run_migrations(db_url) -> None:
     alembic_cfg = Config(str(alembic_ini))
     alembic_cfg.attributes["configure_logger"] = False
     alembic_cfg.set_main_option("sqlalchemy.url", db_url)
-    alembic_cfg.set_main_option("script_location", str(files("open-resource-broker.alembic")))
+    script_loc = str(files("open-resource-broker.alembic"))
+    alembic_cfg.set_main_option("script_location", script_loc)
     alembic_cfg.set_main_option(
         "version_locations",
         str(files("open-resource-broker.alembic").joinpath("versions")),

@@ -44,9 +44,8 @@ def get_pod_spec(flavor: str = "vanilla") -> str:
 
 def generate_provider_conf(flavor: str = "vanilla") -> str:
     """Generates a temp confdir with the templates file and returns the path"""
-    templates_tpl = importlib.resources.files("open-resource-broker.tests.resources").joinpath(
-        f"{flavor}-templates.tpl"
-    )
+    resources = importlib.resources.files("open-resource-broker.tests.resources")
+    templates_tpl = resources.joinpath(f"{flavor}-templates.tpl")
 
     pod_spec_path = get_pod_spec(flavor)
 

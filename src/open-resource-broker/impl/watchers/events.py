@@ -28,6 +28,7 @@ from traceback import print_exc
 from typing import Any
 
 import inotify.adapters
+from hostfactory.cli import context
 from prometheus_client import start_http_server
 from prometheus_client.core import REGISTRY
 from prometheus_client.core import CounterMetricFamily
@@ -35,7 +36,6 @@ from prometheus_client.core import GaugeMetricFamily
 
 from hostfactory import fsutils
 from hostfactory import k8sutils
-from hostfactory.cli import context
 
 logger = logging.getLogger(__name__)
 

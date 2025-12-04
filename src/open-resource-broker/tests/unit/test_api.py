@@ -21,12 +21,12 @@ from collections.abc import Generator
 from unittest import mock
 
 import pytest
-
-import hostfactory
-from hostfactory import api
 from hostfactory.tests import generate_provider_conf
 from hostfactory.tests import get_pod_spec
 from hostfactory.tests import get_workdir
+
+import hostfactory
+from hostfactory import api
 
 mock_pod = {
     "spec": {"node_name": "node1"},

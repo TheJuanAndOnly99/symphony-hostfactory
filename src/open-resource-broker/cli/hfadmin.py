@@ -18,14 +18,14 @@ import logging
 import pathlib
 
 import click
+from hostfactory.cli import context
+from hostfactory.cli import log_handler
+from hostfactory.impl import hfadmin as impl
 
 from hostfactory import cli
 from hostfactory import events
 from hostfactory import fsutils
 from hostfactory import hfreplay
-from hostfactory.cli import context
-from hostfactory.cli import log_handler
-from hostfactory.impl import hfadmin as impl
 
 logger = logging.getLogger(__name__)
 

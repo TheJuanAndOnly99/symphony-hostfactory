@@ -20,7 +20,6 @@ import tempfile
 import unittest
 
 import click.testing
-
 from hostfactory.cli.hf import run as hostfactory
 from hostfactory.cli.hfadmin import run as hfadmin
 from hostfactory.tests import cleanup_provider_conf

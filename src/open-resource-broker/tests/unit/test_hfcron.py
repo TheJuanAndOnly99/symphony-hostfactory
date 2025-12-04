@@ -20,10 +20,10 @@ from unittest import mock
 from unittest.mock import MagicMock
 
 import click.testing
-
-from hostfactory import fsutils
 from hostfactory.cli.hf import run as hostfactory
 from hostfactory.tests import get_workdir
+
+from hostfactory import fsutils
 
 
 def _run_cli(module, args) -> click.testing.Result:

@@ -359,7 +359,7 @@ def get_request_status(workdir, hf_req_ids) -> dict:
 
 
 def request_return_machines(workdir, machines, request_id) -> dict:
-    """Request to return machines based on the provided open-resource-broker input JSON."""
+    """Request to return machines based on the provided input JSON."""
     workdir_path = pathlib.Path(workdir)
     with hfevents.EventsBuffer() as events:
         events.post(

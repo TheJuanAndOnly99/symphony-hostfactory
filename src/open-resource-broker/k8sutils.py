@@ -22,14 +22,13 @@ from http import HTTPStatus
 
 import kubernetes
 import urllib3
+from hostfactory.cli import context
 from tenacity import before_sleep_log
 from tenacity import retry
 from tenacity import retry_if_exception_type
 from tenacity import retry_if_result
 from tenacity import stop_after_attempt
 from tenacity import wait_exponential
-
-from hostfactory.cli import context
 
 logger = logging.getLogger(__name__)
 

@@ -22,11 +22,11 @@ from unittest import mock
 
 import inotify.adapters
 import inotify.constants
-
-from hostfactory import fsutils
 from hostfactory.impl.watchers import handlers
 from hostfactory.impl.watchers import request
 from hostfactory.tests import get_workdir
+
+from hostfactory import fsutils
 
 
 def _setup_inotify(watchdir) -> inotify.adapters.Inotify():
