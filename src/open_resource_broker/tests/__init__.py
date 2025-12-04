@@ -33,7 +33,7 @@ def _get_tempdir() -> str:
 def get_pod_spec(flavor: str = "vanilla") -> str:
     """Returns the absolute path to the pod spec"""
     podspec_name = f"{flavor}-spec.yml"
-    resources = importlib.resources.files("open-resource-broker.tests.resources")
+    resources = importlib.resources.files("open_resource_broker.tests.resources")
     template_path = pathlib.Path(resources.joinpath(podspec_name))
     temp_confdir = pathlib.Path(_get_tempdir())
     podspec_template = Template(template_path.read_text())
@@ -44,7 +44,7 @@ def get_pod_spec(flavor: str = "vanilla") -> str:
 
 def generate_provider_conf(flavor: str = "vanilla") -> str:
     """Generates a temp confdir with the templates file and returns the path"""
-    resources = importlib.resources.files("open-resource-broker.tests.resources")
+    resources = importlib.resources.files("open_resource_broker.tests.resources")
     templates_tpl = resources.joinpath(f"{flavor}-templates.tpl")
 
     pod_spec_path = get_pod_spec(flavor)

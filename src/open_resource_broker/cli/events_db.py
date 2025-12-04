@@ -228,15 +228,15 @@ def _transform_data(input_session, events, output_session, run_id) -> None:  # n
 
 def _run_migrations(db_url) -> None:
     """Run Alembic migrations to set up the database schema."""
-    alembic_ini = files("open-resource-broker.alembic").joinpath("alembic.ini")
+    alembic_ini = files("open_resource_broker.alembic").joinpath("alembic.ini")
     alembic_cfg = Config(str(alembic_ini))
     alembic_cfg.attributes["configure_logger"] = False
     alembic_cfg.set_main_option("sqlalchemy.url", db_url)
-    script_loc = str(files("open-resource-broker.alembic"))
+    script_loc = str(files("open_resource_broker.alembic"))
     alembic_cfg.set_main_option("script_location", script_loc)
     alembic_cfg.set_main_option(
         "version_locations",
-        str(files("open-resource-broker.alembic").joinpath("versions")),
+        str(files("open_resource_broker.alembic").joinpath("versions")),
     )
     alembic_cfg.set_main_option("timezone", "UTC")
     alembic_cfg.set_main_option("output_encoding", "utf-8")

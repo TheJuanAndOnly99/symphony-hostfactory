@@ -124,7 +124,7 @@ def test_push_eventsdb_creates_event_file(client, temp_workdir, monkeypatch):
         return _mock_id
 
     monkeypatch.setattr(
-        "open-resource-broker.app.hfutilsapp._push_backup_event", mock_push_backup_event
+        "open_resource_broker.app.hfutilsapp._push_backup_event", mock_push_backup_event
     )
 
     resp = client.get("/push-eventsdb")
