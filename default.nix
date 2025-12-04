@@ -60,7 +60,7 @@ let
       pydantic
       pydantic-settings
       tenacity
-      prometheus_client
+      prometheus-client
       sqlalchemy
       psycopg2
       alembic
