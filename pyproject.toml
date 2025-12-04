@@ -53,13 +53,19 @@ documentation = [
 ]
 
 [project.scripts]
-open-resource-broker = "open-resource-broker.cli.hf:run"
-open-resource-broker-admin = "open-resource-broker.cli.hfadmin:run"
-open-resource-broker-events = "open-resource-broker.cli.events_db:run"
-open-resource-broker-utils = "open-resource-broker.cli.hfutils:runserver"
+open-resource-broker = "hostfactory.cli.hf:run"
+open-resource-broker-admin = "hostfactory.cli.hfadmin:run"
+open-resource-broker-events = "hostfactory.cli.events_db:run"
+open-resource-broker-utils = "hostfactory.cli.hfutils:runserver"
 
 [tool.hatch.metadata]
 allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/open-resource-broker"]
+
+[tool.hatch.build.targets.wheel.sources]
+"src/open-resource-broker" = "hostfactory"
 
 [tool.hatch.build.targets.sdist]
 exclude = ["/*venv"]
@@ -79,7 +85,7 @@ omit = ["src/open-resource-broker/tests/*"]
 [tool.coverage.paths]
 source = [
     "src/open-resource-broker/",
-    "*/site-packages/",
+    "*/site-packages/hostfactory/",
 ]
 
 [tool.coverage.report]
