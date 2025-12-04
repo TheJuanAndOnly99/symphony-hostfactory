@@ -5,7 +5,7 @@ requires = [
 build-backend = "hatchling.build"
 
 [project]
-name = "hostfactory"
+name = "open-resource-broker"
 description = "Symphony k8s deployment tools"
 
 readme = "README.md"
@@ -53,10 +53,10 @@ documentation = [
 ]
 
 [project.scripts]
-hostfactory = "hostfactory.cli.hf:run"
-hostfactory-admin = "hostfactory.cli.hfadmin:run"
-hostfactory-events = "hostfactory.cli.events_db:run"
-hostfactory-utils = "hostfactory.cli.hfutils:runserver"
+open-resource-broker = "open-resource-broker.cli.hf:run"
+open-resource-broker-admin = "open-resource-broker.cli.hfadmin:run"
+open-resource-broker-events = "open-resource-broker.cli.events_db:run"
+open-resource-broker-utils = "open-resource-broker.cli.hfutils:runserver"
 
 [tool.hatch.metadata]
 allow-direct-references = true
@@ -65,20 +65,20 @@ allow-direct-references = true
 exclude = ["/*venv"]
 
 [tool.pytest.ini_options]
-addopts = "--cov src/hostfactory --cov-report term-missing --verbose --cov-fail-under 40"
+addopts = "--cov src/open-resource-broker --cov-report term-missing --verbose --cov-fail-under 40"
 norecursedirs = ["dist", "build", ".tox", "relvenv"]
-testpaths = ["src/hostfactory/tests/unit","src/hostfactory/test/regression"]
+testpaths = ["src/open-resource-broker/tests/unit","src/open-resource-broker/tests/regression"]
 markers = [
     "unit: testing with no external dependencies",
     "regression: expects the pr instance to be up"]
 
 [tool.coverage.run]
 branch = true
-omit = ["src/hostfactory/tests/*"]
+omit = ["src/open-resource-broker/tests/*"]
 
 [tool.coverage.paths]
 source = [
-    "src/hostfactory/",
+    "src/open-resource-broker/",
     "*/site-packages/",
 ]
 

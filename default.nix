@@ -7,8 +7,8 @@ let
   py = python312;
   makevenv = ./makevenv.sh;
 
-  hostfactory = py.pkgs.buildPythonPackage rec {
-    pname = "hostfactory";
+  open-resource-broker = py.pkgs.buildPythonPackage rec {
+    pname = "open-resource-broker";
     version = "1.0";
     pyproject = true;
 
@@ -81,4 +81,4 @@ let
     '';
   };
 in
-{ inherit hostfactory; }
+{ inherit open-resource-broker; }
