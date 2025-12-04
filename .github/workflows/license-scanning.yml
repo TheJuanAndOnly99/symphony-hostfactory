@@ -1,0 +1,39 @@
+name: License Scanning
+
+on:
+  schedule:
+    - cron: '0 8,18 * * 1-5'
+  push:
+    paths:
+      - 'pyproject.toml'
+      - 'constraints.txt'
+      - '.github/workflows/license-scanning.yml'
+  pull_request:
+    paths:
+      - 'pyproject.toml'
+      - 'constraints.txt'
+      - '.github/workflows/license-scanning.yml'
+
+env:
+  ALLOW_LICENSES: "MIT License;Apache Software License;BSD License;Python Software Foundation License;ISC License (ISCL);Mozilla Public License 2.0 (MPL 2.0);The Unlicense (Unlicense);BSD-3-Clause;Apache-2.0;MIT;BSD-2-Clause;PSF-2.0"
+
+jobs:
+  scan:
+    name: Scan Python dependencies for licenses
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies and pip-licenses
+        run: |
+          pip install pip-licenses
+          pip install -e .
+      - name: Scan for licenses
+        run: |
+          echo "=== All detected licenses ==="
+          pip-licenses --format=markdown
+          echo ""
+          echo "=== Checking allowed licenses ==="
+          pip-licenses --allow-only="${{ env.ALLOW_LICENSES }}"
