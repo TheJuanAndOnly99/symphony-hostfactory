@@ -42,7 +42,7 @@ testing = [
     "pytest-cov",
     "pytest",
     "mypy",
-    "ruff==0.12.2",
+    "ruff>=0.8.0",
     "typos",
     "httpx"
 ]
