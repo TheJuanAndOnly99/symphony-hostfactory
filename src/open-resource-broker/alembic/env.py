@@ -1,9 +1,10 @@
 """Alembic environment configuration file."""
 
 from alembic import context
-from hostfactory.events_schema import Base
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
+
+from hostfactory.events_schema import Base
 
 config = context.config
 

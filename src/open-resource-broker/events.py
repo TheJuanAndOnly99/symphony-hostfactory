@@ -27,9 +27,8 @@ from time import time
 from typing import Any
 from uuid import uuid4
 
-from hostfactory.cli import context
-
 from hostfactory import fsutils
+from hostfactory.cli import context
 
 logger = logging.getLogger(__name__)
 

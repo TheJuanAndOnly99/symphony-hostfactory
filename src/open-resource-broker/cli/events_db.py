@@ -19,13 +19,14 @@ from datetime import datetime
 from importlib.resources import files
 
 import click
-import hostfactory.events_schema as schema
 import sqlalchemy
 from alembic import command
 from alembic.config import Config
-from hostfactory.cli import log_handler
 from sqlalchemy import func
 from sqlalchemy.orm import sessionmaker
+
+import hostfactory.events_schema as schema
+from hostfactory.cli import log_handler
 
 _skip = {
     "pod:disrupted_message",

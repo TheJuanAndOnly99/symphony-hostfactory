@@ -20,9 +20,8 @@ import subprocess
 import tempfile
 from typing import Any
 
-from hostfactory.cli import context
-
 from hostfactory import DateTimeEncoder
+from hostfactory.cli import context
 
 logger = logging.getLogger(__name__)
 

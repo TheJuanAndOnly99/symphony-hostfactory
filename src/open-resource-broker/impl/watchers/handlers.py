@@ -22,10 +22,10 @@ from typing import Any
 
 import kubernetes
 import yaml
-from hostfactory.cli import context
 
 from hostfactory import fsutils
 from hostfactory import k8sutils
+from hostfactory.cli import context
 
 logger = logging.getLogger(__name__)
 

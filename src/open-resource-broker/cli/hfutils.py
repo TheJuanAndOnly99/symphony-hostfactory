@@ -18,10 +18,11 @@ import logging
 
 import click
 import uvicorn
+from uvicorn.config import LOGGING_CONFIG
+
 from hostfactory.app.hfutilsapp import Settings
 from hostfactory.app.hfutilsapp import create_app
 from hostfactory.cli import log_handler
-from uvicorn.config import LOGGING_CONFIG
 
 custom_log_config = copy.deepcopy(LOGGING_CONFIG)
 logger = logging.getLogger(__name__)
