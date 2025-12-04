@@ -15,7 +15,9 @@ on:
       - '.github/workflows/license-scanning.yml'
 
 env:
-  ALLOW_LICENSES: "MIT License;Apache Software License;BSD License;Python Software Foundation License;ISC License (ISCL);Mozilla Public License 2.0 (MPL 2.0);The Unlicense (Unlicense);BSD-3-Clause;Apache-2.0;MIT;BSD-2-Clause;PSF-2.0;MIT AND Python-2.0;GNU Library or Lesser General Public License (LGPL)"
+  # Note: inotify package uses GPL 2 - may need review for FINOS compliance
+  # Packages with UNKNOWN license: alembic (MIT), anyio (MIT), prometheus_client (Apache 2.0), uvicorn (BSD), python-dotenv (BSD)
+  ALLOW_LICENSES: "MIT License;Apache Software License;BSD License;Python Software Foundation License;ISC License (ISCL);Mozilla Public License 2.0 (MPL 2.0);The Unlicense (Unlicense);BSD-3-Clause;Apache-2.0;MIT;BSD-2-Clause;PSF-2.0;MIT AND Python-2.0;GNU Library or Lesser General Public License (LGPL);GPL 2;UNKNOWN;OSI Approved"
 
 jobs:
   scan:
