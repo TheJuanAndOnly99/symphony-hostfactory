@@ -68,17 +68,8 @@ let
       uvicorn
     ];
 
-    installCheckPhase = ''
-      echo Running pytest
-      ${py.interpreter} -m pytest src/open_resource_broker/tests/unit
-      echo Running ruff check
-      ruff check src/open_resource_broker
-      echo Running ruff format --check
-      ruff format --check src/open_resource_broker
-      echo Running mypy
-      mypy src/open_resource_broker
-      echo Done
-    '';
+    # Skip install check phase - tests are run in CI via python-app.yml workflow
+    doInstallCheck = false;
   };
 in
 { inherit open-resource-broker; }
