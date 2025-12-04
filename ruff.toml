@@ -1,7 +1,6 @@
 exclude = [
     "documentation",
-    "src/hostfactory/alembic/versions/*",
-    "src/open-resource-broker/alembic/versions/*"
+    "src/open_resource_broker/alembic/versions/*"
 ]
 
 target-version = "py312"
@@ -110,23 +109,13 @@ flake8-tidy-imports.banned-api."ms.version".msg = "ms.version is legacy/deprecat
 
 [lint.per-file-ignores]
 # Certain linter options do not make sense for tests
-"src/hostfactory/tests/**/*.py" = [
+"src/open_resource_broker/tests/**/*.py" = [
     "S101",     # allow assert statement
     "SLF001",   # allow private member access in tests
     "ANN",      # do not expect type annotations
     "PLR2004",  # magic numbers ok in test assertions
     "PT019",    # allow fixture param without value for unittest mock
 ]
-"src/open-resource-broker/tests/**/*.py" = [
-    "S101",     # allow assert statement
-    "SLF001",   # allow private member access in tests
-    "ANN",      # do not expect type annotations
-    "PLR2004",  # magic numbers ok in test assertions
-    "PT019",    # allow fixture param without value for unittest mock
-    "N999",     # allow invalid module name (open-resource-broker has hyphens)
-]
-# Module naming - open-resource-broker uses hyphens which is intentional
-"src/open-resource-broker/**/*.py" = ["N999"]
 
 [lint.pylint]
 max-args = 10

@@ -53,39 +53,39 @@ documentation = [
 ]
 
 [project.scripts]
-open-resource-broker = "hostfactory.cli.hf:run"
-open-resource-broker-admin = "hostfactory.cli.hfadmin:run"
-open-resource-broker-events = "hostfactory.cli.events_db:run"
-open-resource-broker-utils = "hostfactory.cli.hfutils:runserver"
+open-resource-broker = "open_resource_broker.cli.hf:run"
+open-resource-broker-admin = "open_resource_broker.cli.hfadmin:run"
+open-resource-broker-events = "open_resource_broker.cli.events_db:run"
+open-resource-broker-utils = "open_resource_broker.cli.hfutils:runserver"
 
 [tool.hatch.metadata]
 allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/open-resource-broker"]
+packages = ["src/open_resource_broker"]
 
 [tool.hatch.build.targets.wheel.sources]
-"src/open-resource-broker" = "hostfactory"
+"src/open_resource_broker" = "open_resource_broker"
 
 [tool.hatch.build.targets.sdist]
 exclude = ["/*venv"]
 
 [tool.pytest.ini_options]
-addopts = "--cov src/open-resource-broker --cov-report term-missing --verbose --cov-fail-under 40"
+addopts = "--cov src/open_resource_broker --cov-report term-missing --verbose --cov-fail-under 40"
 norecursedirs = ["dist", "build", ".tox", "relvenv"]
-testpaths = ["src/open-resource-broker/tests/unit","src/open-resource-broker/tests/regression"]
+testpaths = ["src/open_resource_broker/tests/unit","src/open_resource_broker/tests/regression"]
 markers = [
     "unit: testing with no external dependencies",
     "regression: expects the pr instance to be up"]
 
 [tool.coverage.run]
 branch = true
-omit = ["src/open-resource-broker/tests/*"]
+omit = ["src/open_resource_broker/tests/*"]
 
 [tool.coverage.paths]
 source = [
-    "src/open-resource-broker/",
-    "*/site-packages/hostfactory/",
+    "src/open_resource_broker/",
+    "*/site-packages/open_resource_broker/",
 ]
 
 [tool.coverage.report]
