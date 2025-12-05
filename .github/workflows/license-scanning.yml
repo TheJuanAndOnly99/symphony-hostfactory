@@ -39,4 +39,4 @@ jobs:
           pip-licenses --format=markdown --ignore-packages open-resource-broker
           echo ""
           echo "=== Checking allowed licenses ==="
-          pip-licenses --allow-only="${{ env.ALLOW_LICENSES }}" --ignore-packages open-resource-broker
+          pip-licenses --allow-only="${{ env.ALLOW_LICENSES }}" --ignore-packages open-resource-broker wrapt
