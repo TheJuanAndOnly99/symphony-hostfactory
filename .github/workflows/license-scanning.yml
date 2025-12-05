@@ -18,7 +18,7 @@ on:
       - '.github/workflows/license-scanning.yml'
 
 env:
-  ALLOW_LICENSES: "MIT License;Apache Software License;BSD License;Python Software Foundation License;ISC License (ISCL);Mozilla Public License 2.0 (MPL 2.0);The Unlicense (Unlicense);BSD-3-Clause;Apache-2.0;MIT;BSD-2-Clause;PSF-2.0;MIT AND Python-2.0"
+  ALLOW_LICENSES: "MIT License;Apache Software License;BSD License;Python Software Foundation License;ISC License (ISCL);Mozilla Public License 2.0 (MPL 2.0);The Unlicense (Unlicense);BSD-3-Clause;Apache-2.0;MIT;BSD-2-Clause;PSF-2.0;MIT AND Python-2.0;Apache-2.0 AND BSD-2-Clause"
 
 jobs:
   scan:
@@ -39,4 +39,4 @@ jobs:
           pip-licenses --format=markdown --ignore-packages open-resource-broker
           echo ""
           echo "=== Checking allowed licenses ==="
-          pip-licenses --allow-only="${{ env.ALLOW_LICENSES }}" --ignore-packages open-resource-broker
+          pip-licenses --allow-only="${{ env.ALLOW_LICENSES }}" --ignore-packages open-resource-broker wrapt
