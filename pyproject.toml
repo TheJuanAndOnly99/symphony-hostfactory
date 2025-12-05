@@ -20,7 +20,7 @@ dependencies = [
     "boto3",
     "jinja2",
     "typing-extensions",
-    "inotify",
+    "watchdog",
     "hatchling",
     "rich",
     "wrapt",
@@ -29,7 +29,7 @@ dependencies = [
     "tenacity",
     "prometheus-client",
     "sqlalchemy",
-    "psycopg2",
+    "pg8000",
     "alembic",
     "fastapi",
     "uvicorn"

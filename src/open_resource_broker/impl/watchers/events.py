@@ -16,6 +16,7 @@ Top level events watcher
 import json
 import logging
 import pathlib
+import queue
 import signal
 import sqlite3
 import sys
@@ -27,11 +28,12 @@ from threading import Lock
 from traceback import print_exc
 from typing import Any
 
-import inotify.adapters
 from prometheus_client import start_http_server
 from prometheus_client.core import REGISTRY
 from prometheus_client.core import CounterMetricFamily
 from prometheus_client.core import GaugeMetricFamily
+from watchdog.events import FileSystemEventHandler
+from watchdog.observers import Observer
 
 from open_resource_broker import fsutils
 from open_resource_broker import k8sutils
@@ -606,22 +608,44 @@ def _process_events(eventfiles, backends) -> None:
                 raise backend_exception
 
 
+class _EventFileHandler(FileSystemEventHandler):
+    """Watchdog event handler for file system events."""
+
+    def __init__(self, event_queue: queue.Queue) -> None:
+        super().__init__()
+        self.event_queue = event_queue
+
+    def on_created(self, event) -> None:
+        if not event.is_directory:
+            self.event_queue.put(event.src_path)
+
+    def on_moved(self, event) -> None:
+        if not event.is_directory:
+            self.event_queue.put(event.dest_path)
+
+
 def _watch_events(eventdir, backends) -> None:
     logger.info("Watching events in: %s", eventdir)
 
     try:
         _process_events(_pending_events(eventdir), backends)
 
-        dirwatch = inotify.adapters.Inotify()
+        event_queue: queue.Queue = queue.Queue()
+        handler = _EventFileHandler(event_queue)
+        observer = Observer()
+        observer.schedule(handler, str(eventdir), recursive=False)
+        observer.start()
 
-        dirwatch.add_watch(
-            str(eventdir),
-            mask=inotify.constants.IN_CREATE | inotify.constants.IN_MOVED_TO,
-        )
-
-        for event in dirwatch.event_gen(yield_nones=False):
-            (_, _type_names, path, _filename) = event
-            _process_events(_pending_events(path), backends)
+        try:
+            while True:
+                try:
+                    event_queue.get(timeout=1.0)
+                    _process_events(_pending_events(eventdir), backends)
+                except queue.Empty:
+                    pass
+        finally:
+            observer.stop()
+            observer.join()
     finally:
         backend_exception = None
         for backend in backends:

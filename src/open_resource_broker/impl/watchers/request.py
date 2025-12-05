@@ -15,8 +15,10 @@ Top level functions for managing requests
 
 import logging
 import pathlib
+import queue
 
-import inotify.adapters
+from watchdog.events import FileSystemEventHandler
+from watchdog.observers import Observer
 
 from open_resource_broker import fsutils
 
@@ -50,6 +52,22 @@ def _process_pending_events(
         request.joinpath(".processed").touch()
 
 
+class _RequestDirHandler(FileSystemEventHandler):
+    """Watchdog event handler for request directory events."""
+
+    def __init__(self, event_queue: queue.Queue) -> None:
+        super().__init__()
+        self.event_queue = event_queue
+
+    def on_created(self, event) -> None:
+        if event.is_directory:
+            self.event_queue.put(event.src_path)
+
+    def on_moved(self, event) -> None:
+        if event.is_directory:
+            self.event_queue.put(event.dest_path)
+
+
 def watch(
     workdir,
     request_dir,
@@ -64,25 +82,29 @@ def watch(
         request_handler,
     )
 
-    dirwatch = inotify.adapters.Inotify()
+    event_queue: queue.Queue = queue.Queue()
+    handler = _RequestDirHandler(event_queue)
+    observer = Observer()
+    observer.schedule(handler, str(request_dir), recursive=False)
+    observer.start()
 
-    # Add the path to watch
-    dirwatch.add_watch(
-        str(request_dir),
-        mask=inotify.constants.IN_CREATE | inotify.constants.IN_MOVED_TO,
-    )
-
-    for event in dirwatch.event_gen(yield_nones=False):
-        (_, _type_names, path, filename) = event
-        if filename.startswith("."):
-            continue
-        # Ignore files, as each request is a directory.
-        request = pathlib.Path(path) / filename
-        if request.is_dir():
-            # TODO: error handling? Exit on error and allow supvervisor to restart?
-            handle_request(
-                workdir,
-                request,
-                request_handler,
-            )
-            request.joinpath(".processed").touch()
+    try:
+        while True:
+            try:
+                event_path = event_queue.get(timeout=1.0)
+                request = pathlib.Path(event_path)
+                filename = request.name
+                if filename.startswith("."):
+                    continue
+                if request.is_dir():
+                    handle_request(
+                        workdir,
+                        request,
+                        request_handler,
+                    )
+                    request.joinpath(".processed").touch()
+            except queue.Empty:
+                pass
+    finally:
+        observer.stop()
+        observer.join()

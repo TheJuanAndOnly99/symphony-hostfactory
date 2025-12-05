@@ -20,32 +20,14 @@ import tempfile
 import unittest
 from unittest import mock
 
-import inotify.adapters
-import inotify.constants
-
 from open_resource_broker import fsutils
 from open_resource_broker.impl.watchers import handlers
 from open_resource_broker.impl.watchers import request
 from open_resource_broker.tests import get_workdir
 
 
-def _setup_inotify(watchdir) -> inotify.adapters.Inotify():
-    """Setup inotify object"""
-    inotify_inst = inotify.adapters.Inotify()
-    inotify_inst.add_watch(
-        str(watchdir),
-        mask=inotify.constants.IN_CREATE | inotify.constants.IN_MOVED_TO,
-    )
-    return inotify_inst
-
-
-def _read_all_events(inotify_inst) -> list:
-    """Read all events from the inotify object"""
-    return list(inotify_inst.event_gen(timeout_s=1, yield_nones=False))
-
-
 @mock.patch(
-    "open_resource_broker.impl.watchers.request.inotify.adapters.Inotify",
+    "open_resource_broker.impl.watchers.request.Observer",
     return_value=mock.MagicMock(),
 )
 @mock.patch("open_resource_broker.impl.watchers.handlers._create_pod")
@@ -59,17 +41,15 @@ class TestRequestMachinesWatcher(unittest.TestCase):
         requests = self.workdir / "requests"
         self.req_dir = requests / req_id
         self.req_dir.mkdir(parents=True, exist_ok=True)
-        self.inotify_inst = _setup_inotify(requests)
 
     def tearDown(self) -> None:
         """Cleanup the test"""
-        del self.inotify_inst
         shutil.rmtree(self.workdir, ignore_errors=True)
 
     def test_request_machines_watcher(
         self,
         mock_create_pod,
-        mock_inotify,  # noqa: ARG002
+        mock_observer,  # noqa: ARG002
     ) -> None:
         """Test request machines watcher"""
         temp_dir = pathlib.Path(tempfile.mkdtemp(dir="/tmp"))
@@ -97,7 +77,7 @@ class TestRequestMachinesWatcher(unittest.TestCase):
 
 
 @mock.patch(
-    "open_resource_broker.impl.watchers.request.inotify.adapters.Inotify",
+    "open_resource_broker.impl.watchers.request.Observer",
     return_value=mock.MagicMock(),
 )
 @mock.patch("open_resource_broker.impl.watchers.handlers._delete_pod")
@@ -115,17 +95,15 @@ class TestRequestReturnMachinesWatcher(unittest.TestCase):
         self.pods_dir.mkdir(parents=True, exist_ok=True)
         self.pods_status_dir = self.workdir / "pods-status"
         self.pods_status_dir.mkdir(parents=True, exist_ok=True)
-        self.inotify_inst = _setup_inotify(requests)
 
     def tearDown(self) -> None:
         """Cleanup the test"""
-        del self.inotify_inst
         shutil.rmtree(self.workdir, ignore_errors=True)
 
     def test_request_return_machines_watcher(
         self,
         mock_delete_pod,
-        mock_inotify,  # noqa: ARG002
+        mock_observer,  # noqa: ARG002
     ) -> None:
         """Test request return machines watcher"""
         mock_pod = {"metadata": {"name": "machine1"}, "status": {"phase": "Running"}}
